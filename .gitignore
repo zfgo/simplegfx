@@ -1,3 +1,12 @@
+# include makefiles, exclude other files with no identifier.
+*
+!Makefile
+!/**/
+!*.*
+
+# exclude vim swap files
+*.swp
+
 # Prerequisites
 *.d
 
