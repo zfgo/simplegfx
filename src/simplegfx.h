@@ -5,4 +5,4 @@
 
 bool simplegfx_create_img(int x_dim, int y_dim);
 
-#endif
+#endif /* SIMPLEGFX_H_ */
