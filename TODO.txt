@@ -3,6 +3,10 @@ creating a canvas of pixels that is stored in memory that the user can
 alter using the given library functions. The library may or may not
 provide the ability to write that canvas to a file.
 
+drawing inspiration from Sventek's data structures (See "C and Data
+Structures" by Joseph Sventek) as well as tsoding's Olive.c (see 
+github.com/tsoding/olive.c).
+
 - Create a simple data structure, similar to Sventek's data structures
     - Data structure is a "canvas" and is an array of pixels
     - Also need to have info about the canvas's dimensions
