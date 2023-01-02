@@ -2,17 +2,15 @@
 #define SIMPLEGFX_H_
 
 #include <stdbool.h>
+#include <stdint.h>
 
-struct pixel {
-    uint32_t color;
-};
 
-struct canvas_data {
+typedef struct simplegfx_canvas {
     int x_dim;
     int y_dim;
-    struct pixel **canvas;
-};
+    uint32_t *pixels;
+} Simplegfx_canvas;
 
-bool simplegfx_create_img(int x_dim, int y_dim);
+const Simplegfx_canvas *simplegfx_create_canvas(int x_dim, int y_dim);
 
 #endif /* SIMPLEGFX_H_ */
