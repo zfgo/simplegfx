@@ -1,0 +1,22 @@
+The way that the author intends for this library to function is by
+creating a canvas of pixels that is stored in memory that the user can
+alter using the given library functions. The library may or may not
+provide the ability to write that canvas to a file.
+
+- Create a simple data structure, similar to Sventek's data structures
+    - Data structure is a "canvas" and is an array of pixels
+    - Also need to have info about the canvas's dimensions
+- Functions:
+    - first: create_canvas() - initialize the canvas given initial 
+      dimensions
+    - second: write_canvas() - write the canvas to a file to be able to
+      check that everything is working
+    - third: draw_point() - draw a point on the canvas
+
+- other fxns:
+    - draw_line()
+    - set_background()
+    - draw_rectangle()
+    - draw_triangle()
+    - draw_circle()
+    - draw_ellipse()
