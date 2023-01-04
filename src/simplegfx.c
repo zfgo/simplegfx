@@ -2,7 +2,7 @@
 
 #define UNUSED __attribute__((unused))
 
-const Simplegfx_canvas *simplegfx_create_canvas(int x_dim, int y_dim) {
+const Simplegfx_canvas simplegfx_create_canvas(int x_dim, int y_dim) {
     /*
      * Create an array of memory ("pixels") and fill each pixel with
      * different colors, etc. This library on creates this array of 
@@ -15,5 +15,5 @@ const Simplegfx_canvas *simplegfx_create_canvas(int x_dim, int y_dim) {
     canvas.x_dim = x_dim;
     canvas.y_dim = y_dim;
 
-    return &canvas;
+    return canvas;
 } 
