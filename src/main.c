@@ -3,10 +3,13 @@
 #include "simplegfx.h"
 
 int main(void) {
-    const Simplegfx_canvas *canvas;
+    const Simplegfx_canvas *canvas = NULL;
 
-    canvas->create(10,10);
+    if ((canvas = Simplegfx_canvas_create(10,10)) == NULL) {
+        printf("unable to make canvas\n");
+    }
 
+    canvas->destroy(canvas);
     printf("Done.\n");
     return 0;
 }
