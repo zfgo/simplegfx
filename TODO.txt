@@ -24,3 +24,7 @@ github.com/tsoding/olive.c).
     - draw_triangle()
     - draw_circle()
     - draw_ellipse()
+
+- The header file needs to contain the struct simplegfx_canvas, which
+  will contain the private data of the canvas in a "self" struct as
+  well as the function declarations that can be used on the canvas.
