@@ -15,13 +15,15 @@ static void simplegfx_canvas_destroy(const Simplegfx_canvas *canvas) {
     return;
 }
 
-static const Simplegfx_canvas *simplegfx_canvas_create(const Simplegfx_canvas *canvas);
+static const Simplegfx_canvas *simplegfx_canvas_create(int x_dimension, int y_dimension);
 
 static Simplegfx_canvas template = {
-    NULL, simplegfx_canvas_create, simplegfx_canvas_destroy
+    NULL, 
+    //simplegfx_canvas_create, 
+    simplegfx_canvas_destroy
 };
 
-static const Simplegfx_canvas *simplegfx_new_canvas(int x_dimension, int y_dimension) {
+static const Simplegfx_canvas *simplegfx_canvas_create(int x_dimension, int y_dimension) {
     /*
      * Create an array of memory ("pixels") and fill each pixel with
      * different colors, etc. This library on creates this array of 
@@ -37,8 +39,8 @@ static const Simplegfx_canvas *simplegfx_new_canvas(int x_dimension, int y_dimen
             int x_dim, y_dim;
             uint32_t **pixels;
 
-            x_dim = (x_dim <= 0) ? DEFAULT_DIM : x_dimension;
-            y_dim = (y_dim <= 0) ? DEFAULT_DIM : y_dimension;
+            x_dim = (x_dimension <= 0) ? DEFAULT_DIM : x_dimension;
+            y_dim = (y_dimension <= 0) ? DEFAULT_DIM : y_dimension;
 
             pixels = (uint32_t **)malloc(sizeof(uint32_t *) * x_dim);
             if (pixels != NULL) {
@@ -68,4 +70,7 @@ static const Simplegfx_canvas *simplegfx_new_canvas(int x_dimension, int y_dimen
     return canvas;
 } 
 
-static const *Simplegfx_canvas_create( // TODO TODO TODO
+
+const Simplegfx_canvas *Simplegfx_canvas_create(int x_dim, int y_dim) {
+    return simplegfx_canvas_create(x_dim, y_dim);
+}
