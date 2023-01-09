@@ -6,6 +6,7 @@
 
 # exclude tmp test file
 tmp.c
+/tmp
 
 # exclude vim swap files
 *.swp
