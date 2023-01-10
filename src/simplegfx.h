@@ -34,6 +34,10 @@ struct simplegfx_canvas {
     /* write the canvas to a .ppm file
      */
     bool (*write)(const Simplegfx_canvas *canvas, char *file_name);
+
+    /* fill the canvas with one color
+     */
+    void (*fill_canvas)(const Simplegfx_canvas *canvas, char r, char g, char b);
 };
 
 #endif /* SIMPLEGFX_H_ */

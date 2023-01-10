@@ -30,12 +30,13 @@ static void simplegfx_canvas_destroy(const Simplegfx_canvas *canvas) {
 
 static bool simplegfx_write(const Simplegfx_canvas *canvas, char *file_name) {
     Canvas_data *c_data = (Canvas_data *)canvas->self;
+    FILE *fp = fopen(file_name, "wb"); /* wb - write binary mode */
     int i, j;
 
-    FILE *fp = fopen(file_name, "wb"); /* wb - write binary mode */
     if (fp == NULL) {
         return false;
     }
+
     (void )fprintf(fp, "P6\n%d %d\n255\n", c_data->x_dim, c_data->y_dim);
 
     for (i = 0; i < c_data->x_dim; ++i) {
@@ -49,13 +50,35 @@ static bool simplegfx_write(const Simplegfx_canvas *canvas, char *file_name) {
     return true;
 }
 
+
+static void simplegfx_fill_canvas(const Simplegfx_canvas *canvas, char r, char g, char b) {
+    Canvas_data *c_data = (Canvas_data *)canvas->self;
+    int i, j;
+    uint32_t color = 0;
+
+    color = color & r;
+    color = color << 8;
+    color = color & g;
+    color = color << 8;
+    color = color & b;
+    color = color << 8;
+
+    for (i = 0; i < c_data->x_dim; ++i) {
+        for (j = 0; j < c_data->y_dim; ++j) {
+            c_data->pixels[i][j] = color;
+        }
+    }
+}
+
+
 static const Simplegfx_canvas *simplegfx_canvas_create(int x_dimension, int y_dimension);
 
 static Simplegfx_canvas template = {
     NULL, 
     //simplegfx_canvas_create, 
     simplegfx_canvas_destroy,
-    simplegfx_write
+    simplegfx_write,
+    simplegfx_fill_canvas
 };
 
 static const Simplegfx_canvas *simplegfx_canvas_create(int x_dimension, int y_dimension) {
