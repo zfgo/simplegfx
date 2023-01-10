@@ -12,7 +12,7 @@ github.com/tsoding/olive.c).
     - Also need to have info about the canvas's dimensions
 - Functions:
     - first: create_canvas() - initialize the canvas given initial 
-      dimensions
+      dimensions - DONE
     - second: write_canvas() - write the canvas to a file to be able to
       check that everything is working
     - third: draw_point() - draw a point on the canvas
