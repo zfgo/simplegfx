@@ -1,6 +1,5 @@
 CC = gcc
 SRCPATH = ./src
-BUILDPATH = ./build
 sources = $(wildcard $(SRCPATH)/*.c)
 objects = $(addsuffix .o, $(basename $(sources)))
 flags = -g -W -Wall -DDEBUG=1
