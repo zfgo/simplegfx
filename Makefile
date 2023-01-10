@@ -13,4 +13,4 @@ $(target) : $(objects)
 	$(CC) -c $(flags) $< -o $@
 
 clean :
-	rm -rf $(target) $(objects)
+	rm -rf $(target) $(objects) ./tests/*.ppm
