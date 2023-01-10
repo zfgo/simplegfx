@@ -32,16 +32,26 @@ static bool simplegfx_write(const Simplegfx_canvas *canvas, char *file_name) {
     Canvas_data *c_data = (Canvas_data *)canvas->self;
     FILE *fp = fopen(file_name, "wb"); /* wb - write binary mode */
     int i, j;
+    uint32_t pixel,
+             mask = 0xFF;
 
     if (fp == NULL) {
         return false;
     }
 
-    (void )fprintf(fp, "P6\n%d %d\n255\n", c_data->x_dim, c_data->y_dim);
+    (void)fprintf(fp, "P6\n%d %d\n255\n", c_data->x_dim, c_data->y_dim);
 
     for (i = 0; i < c_data->x_dim; ++i) {
-        for (j = 0; j < c_data->y_dim; ++j) {
-            (void) fwrite(&c_data->pixels[i][j], 4, 1, fp);
+        for (j = 0; j < c_data->y_dim; ++j) {\
+            static unsigned char color[3];
+            pixel = c_data->pixels[i][j];
+            color[2] = pixel & mask;
+            pixel = pixel >> 8;
+            color[1] = pixel & mask;
+            pixel = pixel >> 8;
+            color[0] = pixel & mask;
+            
+            (void)fwrite(color, 1, 3, fp);
         }
     }
 
