@@ -8,7 +8,7 @@ int main(void) {
     if ((canvas = Simplegfx_canvas_create(10,10)) == NULL) {
         printf("unable to make canvas\n");
     }
-
+    canvas->write(canvas, "test.ppm");
     canvas->destroy(canvas);
     printf("Done.\n");
     return 0;
