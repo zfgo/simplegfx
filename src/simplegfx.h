@@ -30,6 +30,10 @@ struct simplegfx_canvas {
     /* destroy the canvas
      */
     void (*destroy)(const Simplegfx_canvas *canvas);
+
+    /* write the canvas to a .ppm file
+     */
+    bool (*write)(const Simplegfx_canvas *canvas, char *file_name);
 };
 
 #endif /* SIMPLEGFX_H_ */

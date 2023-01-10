@@ -1,5 +1,6 @@
 #include "simplegfx.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 #define UNUSED __attribute__((unused))
 
@@ -9,10 +10,43 @@ typedef struct canvas_data {
     uint32_t **pixels;
 } Canvas_data;
 
+/* local function - traverse through pixels, freeing the rows
+ */
+static void purge_pixels(Canvas_data *c_data) {
+    for (int i = 0; i < c_data->x_dim; ++i) {
+        free(c_data->pixels[i]);
+    }
+}
+
 
 static void simplegfx_canvas_destroy(const Simplegfx_canvas *canvas) {
-    // TODO
-    return;
+    Canvas_data *c_data = (Canvas_data *)canvas->self;
+    
+    purge_pixels(c_data);
+    free(c_data->pixels);
+    free(c_data);
+    free((void *)canvas);
+}
+
+static bool simplegfx_write(const Simplegfx_canvas *canvas, char *file_name) {
+    Canvas_data *c_data = (Canvas_data *)canvas->self;
+    int i, j;
+
+    FILE *fp = fopen(file_name, "wb"); /* wb - write binary mode */
+    if (fp == NULL) {
+        return false;
+    }
+    (void )fprintf(fp, "P6\n%d %d\n255\n", c_data->x_dim, c_data->y_dim);
+
+    for (i = 0; i < c_data->x_dim; ++i) {
+        for (j = 0; j < c_data->y_dim; ++j) {
+            (void) fwrite(&c_data->pixels[i][j], 4, 1, fp);
+        }
+    }
+
+    (void) fclose(fp);
+
+    return true;
 }
 
 static const Simplegfx_canvas *simplegfx_canvas_create(int x_dimension, int y_dimension);
@@ -20,7 +54,8 @@ static const Simplegfx_canvas *simplegfx_canvas_create(int x_dimension, int y_di
 static Simplegfx_canvas template = {
     NULL, 
     //simplegfx_canvas_create, 
-    simplegfx_canvas_destroy
+    simplegfx_canvas_destroy,
+    simplegfx_write
 };
 
 static const Simplegfx_canvas *simplegfx_canvas_create(int x_dimension, int y_dimension) {
