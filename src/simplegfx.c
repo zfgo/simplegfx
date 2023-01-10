@@ -39,10 +39,12 @@ static bool simplegfx_write(const Simplegfx_canvas *canvas, char *file_name) {
         return false;
     }
 
-    (void)fprintf(fp, "P6\n%d %d\n255\n", c_data->x_dim, c_data->y_dim);
-
+    (void)fprintf(fp, "P7\nWIDTH %d\nHEIGHT %d\nDEPTH 4\nMAXVAL 255\nTUPLTYPE RGB_ALPHA\nENDHDR\n", c_data->x_dim, c_data->y_dim);
+    
     for (i = 0; i < c_data->x_dim; ++i) {
-        for (j = 0; j < c_data->y_dim; ++j) {\
+        for (j = 0; j < c_data->y_dim; ++j) {
+            (void)fwrite(&c_data->pixels[i][j], sizeof(uint32_t), 1, fp);
+            /*
             static unsigned char color[3];
             pixel = c_data->pixels[i][j];
             color[2] = (char)pixel & mask;
@@ -52,6 +54,7 @@ static bool simplegfx_write(const Simplegfx_canvas *canvas, char *file_name) {
             color[0] = (char)pixel & mask;
             
             (void)fwrite(color, 1, 3, fp);
+            */
         }
     }
 
@@ -61,7 +64,7 @@ static bool simplegfx_write(const Simplegfx_canvas *canvas, char *file_name) {
 }
 
 
-static void simplegfx_fill_canvas(const Simplegfx_canvas *canvas, char r, char g, char b) {
+static void simplegfx_fill_canvas(const Simplegfx_canvas *canvas, char r, char g, char b, char alpha) {
     Canvas_data *c_data = (Canvas_data *)canvas->self;
     int i, j;
     uint32_t color = 0;
@@ -72,7 +75,9 @@ static void simplegfx_fill_canvas(const Simplegfx_canvas *canvas, char r, char g
     color = color << 8;
     color = color & b;
     color = color << 8;
+    color = color & alpha;
 
+    /* set all pixels in canvas to color */
     for (i = 0; i < c_data->x_dim; ++i) {
         for (j = 0; j < c_data->y_dim; ++j) {
             c_data->pixels[i][j] = color;

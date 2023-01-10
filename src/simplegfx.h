@@ -37,7 +37,7 @@ struct simplegfx_canvas {
 
     /* fill the canvas with one color
      */
-    void (*fill_canvas)(const Simplegfx_canvas *canvas, char r, char g, char b);
+    void (*fill_canvas)(const Simplegfx_canvas *canvas, char r, char g, char b, char alpha);
 };
 
 #endif /* SIMPLEGFX_H_ */
