@@ -45,11 +45,11 @@ static bool simplegfx_write(const Simplegfx_canvas *canvas, char *file_name) {
         for (j = 0; j < c_data->y_dim; ++j) {\
             static unsigned char color[3];
             pixel = c_data->pixels[i][j];
-            color[2] = pixel & mask;
+            color[2] = (char)pixel & mask;
             pixel = pixel >> 8;
-            color[1] = pixel & mask;
+            color[1] = (char)pixel & mask;
             pixel = pixel >> 8;
-            color[0] = pixel & mask;
+            color[0] = (char)pixel & mask;
             
             (void)fwrite(color, 1, 3, fp);
         }
