@@ -25,7 +25,6 @@ static void purge_pixels(Canvas_data *c_data) {
     }
 }
 
-
 static void simplegfx_canvas_destroy(const Simplegfx_canvas *canvas) {
     Canvas_data *c_data = (Canvas_data *)canvas->self;
     
@@ -50,17 +49,6 @@ static bool simplegfx_write(const Simplegfx_canvas *canvas, char *file_name) {
     for (i = 0; i < c_data->width; ++i) {
         for (j = 0; j < c_data->height; ++j) {
             (void)fwrite(c_data->data[i][j].color, 1, 3, fp);
-            /*
-            static unsigned char color[3];
-            pixel = c_data->pixels[i][j];
-            color[2] = (char)pixel & mask;
-            pixel = pixel >> 8;
-            color[1] = (char)pixel & mask;
-            pixel = pixel >> 8;
-            color[0] = (char)pixel & mask;
-            
-            (void)fwrite(color, 1, 3, fp);
-            */
         }
     }
 
@@ -69,8 +57,9 @@ static bool simplegfx_write(const Simplegfx_canvas *canvas, char *file_name) {
     return true;
 }
 
-
-static void simplegfx_fill_canvas(const Simplegfx_canvas *canvas, char r, char g, char b, char alpha) {
+static void simplegfx_fill_canvas(const Simplegfx_canvas *canvas, 
+                                  unsigned char r, unsigned char g, 
+                                  unsigned char b, unsigned char alpha) {
     Canvas_data *c_data = (Canvas_data *)canvas->self;
     int i, j;
 
@@ -85,6 +74,24 @@ static void simplegfx_fill_canvas(const Simplegfx_canvas *canvas, char r, char g
     }
 }
 
+static void simplegfx_assign_pixel(const Simplegfx_canvas *canvas, int i, int j,
+                                   unsigned char r, unsigned char g, 
+                                   unsigned char b, unsigned char alpha) {
+    Canvas_data *c_data = (Canvas_data *)canvas->self;
+
+    // check that i and j are within the canvas borders
+    if (i >= c_data->height || i < 0 || j >= img->width || j < 0) {
+        #if DEBUG
+            fprintf(stderr, "Error: can not assign pixel out of range.\n");
+        #endif
+        return;
+    }
+
+    c_data->data[i][j].color[0] = r;
+    c_data->data[i][j].color[1] = g;
+    c_data->data[i][j].color[2] = b;
+    c_data->data[i][j].color[3] = alpha;
+}
 
 static const Simplegfx_canvas *simplegfx_canvas_create(int width, int height); // forward reference
 
@@ -93,7 +100,8 @@ static Simplegfx_canvas template = {
     //simplegfx_canvas_create, 
     simplegfx_canvas_destroy,
     simplegfx_write,
-    simplegfx_fill_canvas
+    simplegfx_fill_canvas,
+    simplegfx_assign_pixel
 };
 
 static const Simplegfx_canvas *simplegfx_canvas_create(int width, int height) {
@@ -142,7 +150,6 @@ static const Simplegfx_canvas *simplegfx_canvas_create(int width, int height) {
     }
     return canvas;
 } 
-
 
 const Simplegfx_canvas *Simplegfx_canvas_create(int x_dim, int y_dim) {
     return simplegfx_canvas_create(x_dim, y_dim);
