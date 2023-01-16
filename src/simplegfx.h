@@ -16,7 +16,7 @@ typedef struct simplegfx_canvas Simplegfx_canvas;   /* forward reference */
 
 /* Create canvas function
  */
-const Simplegfx_canvas *Simplegfx_canvas_create(int x_dimension, int y_dimension);
+const Simplegfx_canvas *Simplegfx_canvas_create(int widht, int height);
 
 struct simplegfx_canvas {
     /* The private data of the canvas 

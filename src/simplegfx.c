@@ -3,18 +3,25 @@
 #include <stdio.h>
 
 #define UNUSED __attribute__((unused))
+#define MAX_COLOR_VALUE 255
+
+typedef struct pixel Pixel; // forward reference
 
 typedef struct canvas_data {
-    int x_dim;
-    int y_dim;
-    uint32_t **pixels;
+    int width;
+    int height;
+    Pixel **data;
 } Canvas_data;
+
+struct pixel {
+    unsigned char color[4]; // rgba
+};
 
 /* local function - traverse through pixels, freeing the rows
  */
 static void purge_pixels(Canvas_data *c_data) {
-    for (int i = 0; i < c_data->x_dim; ++i) {
-        free(c_data->pixels[i]);
+    for (int i = 0; i < c_data->width; ++i) {
+        free(c_data->data[i]);
     }
 }
 
@@ -23,27 +30,26 @@ static void simplegfx_canvas_destroy(const Simplegfx_canvas *canvas) {
     Canvas_data *c_data = (Canvas_data *)canvas->self;
     
     purge_pixels(c_data);
-    free(c_data->pixels);
+    free(c_data->data);
     free(c_data);
     free((void *)canvas);
 }
 
 static bool simplegfx_write(const Simplegfx_canvas *canvas, char *file_name) {
     Canvas_data *c_data = (Canvas_data *)canvas->self;
-    FILE *fp = fopen(file_name, "wb"); /* wb - write binary mode */
+    FILE *fp;
     int i, j;
-    uint32_t pixel,
-             mask = 0xFF;
 
-    if (fp == NULL) {
+    if ((fp = fopen(file_name, "wb")) ==  NULL) { /* wb : write binary" */
+        fprintf(stderr, "Error: failed to open file.\n");
         return false;
     }
 
-    (void)fprintf(fp, "P7\nWIDTH %d\nHEIGHT %d\nDEPTH 4\nMAXVAL 255\nTUPLTYPE RGB_ALPHA\nENDHDR\n", c_data->x_dim, c_data->y_dim);
+    (void)fprintf(fp, "P6\n%d %d\n%d\n", c_data->width, c_data->height, MAX_COLOR_VALUE);
     
-    for (i = 0; i < c_data->x_dim; ++i) {
-        for (j = 0; j < c_data->y_dim; ++j) {
-            (void)fwrite(&c_data->pixels[i][j], sizeof(uint32_t), 1, fp);
+    for (i = 0; i < c_data->width; ++i) {
+        for (j = 0; j < c_data->height; ++j) {
+            (void)fwrite(c_data->data[i][j].color, 1, 3, fp);
             /*
             static unsigned char color[3];
             pixel = c_data->pixels[i][j];
@@ -67,26 +73,20 @@ static bool simplegfx_write(const Simplegfx_canvas *canvas, char *file_name) {
 static void simplegfx_fill_canvas(const Simplegfx_canvas *canvas, char r, char g, char b, char alpha) {
     Canvas_data *c_data = (Canvas_data *)canvas->self;
     int i, j;
-    uint32_t color = 0;
-
-    color = color & r;
-    color = color << 8;
-    color = color & g;
-    color = color << 8;
-    color = color & b;
-    color = color << 8;
-    color = color & alpha;
 
     /* set all pixels in canvas to color */
-    for (i = 0; i < c_data->x_dim; ++i) {
-        for (j = 0; j < c_data->y_dim; ++j) {
-            c_data->pixels[i][j] = color;
+    for (i = 0; i < c_data->width; ++i) {
+        for (j = 0; j < c_data->height; ++j) {
+            c_data->data[i][j].color[0] = r;
+            c_data->data[i][j].color[1] = g;
+            c_data->data[i][j].color[2] = b;
+            c_data->data[i][j].color[3] = alpha;
         }
     }
 }
 
 
-static const Simplegfx_canvas *simplegfx_canvas_create(int x_dimension, int y_dimension);
+static const Simplegfx_canvas *simplegfx_canvas_create(int width, int height); // forward reference
 
 static Simplegfx_canvas template = {
     NULL, 
@@ -96,7 +96,7 @@ static Simplegfx_canvas template = {
     simplegfx_fill_canvas
 };
 
-static const Simplegfx_canvas *simplegfx_canvas_create(int x_dimension, int y_dimension) {
+static const Simplegfx_canvas *simplegfx_canvas_create(int width, int height) {
     /*
      * Create an array of memory ("pixels") and fill each pixel with
      * different colors, etc. This library on creates this array of 
@@ -109,23 +109,23 @@ static const Simplegfx_canvas *simplegfx_canvas_create(int x_dimension, int y_di
         Canvas_data *c_data = (Canvas_data *)malloc(sizeof(Canvas_data));
 
         if (c_data != NULL) {
-            int x_dim, y_dim;
-            uint32_t **pixels;
+            int x_dim, y_dim, i;
+            Pixel **data;
 
-            x_dim = (x_dimension <= 0) ? DEFAULT_DIM : x_dimension;
-            y_dim = (y_dimension <= 0) ? DEFAULT_DIM : y_dimension;
+            x_dim = (width <= 0) ? DEFAULT_DIM : width;
+            y_dim = (height <= 0) ? DEFAULT_DIM : height;
 
-            pixels = (uint32_t **)malloc(sizeof(uint32_t *) * x_dim);
-            if (pixels != NULL) {
-                for (int i = 0; i < x_dim; ++i) {
-                    pixels[i] = (uint32_t *)malloc(sizeof(uint32_t) * y_dim);
-                    // TODO: check for malloc errors
+            if ((data = (Pixel **)malloc(sizeof(Pixel *) * x_dim)) != NULL) {
+                for (i = 0; i < x_dim; ++i) {
+                    if ((data[i] = (Pixel *)malloc(sizeof(Pixel) * y_dim)) == NULL) {
+                        // TODO: check for malloc errors
+                    }
                 }
                 
                 // now we can set all of our private data
-                c_data->x_dim = x_dim;
-                c_data->y_dim = y_dim;
-                c_data->pixels = pixels;
+                c_data->width = x_dim;
+                c_data->height = y_dim;
+                c_data->data = data;
 
                 *canvas = template;
                 canvas->self = c_data;
