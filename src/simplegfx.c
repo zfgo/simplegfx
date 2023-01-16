@@ -93,6 +93,12 @@ static void simplegfx_assign_pixel(const Simplegfx_canvas *canvas, int i, int j,
     c_data->data[i][j].color[3] = alpha;
 }
 
+static void simplegfx_draw_rectangle(const Simplegfx_canvas *canvas, int x1, int x2,
+                          int y1, int y2, unsigned char r, unsigned char g,
+                          unsigned char b, unsigned char alpha) {
+// TODO
+}
+
 static const Simplegfx_canvas *simplegfx_canvas_create(int width, int height); // forward reference
 
 static Simplegfx_canvas template = {
