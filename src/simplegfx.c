@@ -80,7 +80,7 @@ static void simplegfx_assign_pixel(const Simplegfx_canvas *canvas, int i, int j,
     Canvas_data *c_data = (Canvas_data *)canvas->self;
 
     // check that i and j are within the canvas borders
-    if (i >= c_data->height || i < 0 || j >= img->width || j < 0) {
+    if (i >= c_data->height || i < 0 || j >= c_data->width || j < 0) {
         #if DEBUG
             fprintf(stderr, "Error: can not assign pixel out of range.\n");
         #endif
