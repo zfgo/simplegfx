@@ -9,7 +9,7 @@ int main(void) {
         printf("unable to make canvas\n");
     }
     canvas->fill_canvas(canvas, 255, 0, 0, 125);
-    canvas->write(canvas, "./tests/test.pam");
+    canvas->write(canvas, "./tests/test.ppm");
     canvas->destroy(canvas);
     printf("Done.\n");
     return 0;
