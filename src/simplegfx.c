@@ -94,9 +94,9 @@ static void simplegfx_assign_pixel(const Simplegfx_canvas *canvas, int i, int j,
 }
 
 static void simplegfx_draw_rectangle(const Simplegfx_canvas *canvas, int x1, int x2,
-                          int y1, int y2, unsigned char r, unsigned char g,
-                          unsigned char b, unsigned char alpha) {
-// TODO
+                                     int y1, int y2, unsigned char r, unsigned char g,
+                                     unsigned char b, unsigned char alpha) {
+// TODO: need to ensure that the rectangle is not drawn out of bounds
 }
 
 static const Simplegfx_canvas *simplegfx_canvas_create(int width, int height); // forward reference
