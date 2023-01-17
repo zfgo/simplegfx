@@ -19,7 +19,7 @@ struct pixel {
 
 /* local function - traverse through pixels, freeing the rows
  */
-static void purge_pixels(Canvas_data *c_data) {
+static void simplegfx_purge_pixels(Canvas_data *c_data) {
     for (int i = 0; i < c_data->width; ++i) {
         free(c_data->data[i]);
     }
@@ -28,7 +28,7 @@ static void purge_pixels(Canvas_data *c_data) {
 static void simplegfx_canvas_destroy(const Simplegfx_canvas *canvas) {
     Canvas_data *c_data = (Canvas_data *)canvas->self;
     
-    purge_pixels(c_data);
+    simplegfx_purge_pixels(c_data);
     free(c_data->data);
     free(c_data);
     free((void *)canvas);
@@ -93,10 +93,23 @@ static void simplegfx_assign_pixel(const Simplegfx_canvas *canvas, int i, int j,
     c_data->data[i][j].color[3] = alpha;
 }
 
-static void simplegfx_draw_rectangle(const Simplegfx_canvas *canvas, int x1, int x2,
+static void simplegfx_rectangle(const Simplegfx_canvas *canvas, int x1, int x2,
                                      int y1, int y2, unsigned char r, unsigned char g,
                                      unsigned char b, unsigned char alpha) {
-// TODO: need to ensure that the rectangle is not drawn out of bounds
+    int i, j;
+    int x_max, x_min,
+        y_max, y_min;
+
+    x_max = (x1 > x2) ? x1 : x2;
+    x_min = (x1 <= x2) ? x1 : x2;
+    y_max = (y1 > y2) ? y1 : y2;
+    y_min = (y1 <= y2) ? y1 : y2;
+
+    for (i = y_min; i <= y_max; ++i) {
+        for (j = x_min; j <= x_max; ++j) {
+            canvas->assign_pixel(canvas, i, j, r, g, b, alpha);
+        }
+    }
 }
 
 static const Simplegfx_canvas *simplegfx_canvas_create(int width, int height); // forward reference
@@ -107,7 +120,8 @@ static Simplegfx_canvas template = {
     simplegfx_canvas_destroy,
     simplegfx_write,
     simplegfx_fill_canvas,
-    simplegfx_assign_pixel
+    simplegfx_assign_pixel,
+    simplegfx_rectangle
 };
 
 static const Simplegfx_canvas *simplegfx_canvas_create(int width, int height) {

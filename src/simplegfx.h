@@ -49,7 +49,7 @@ struct simplegfx_canvas {
 
     /* draw a rectangle between two coordinate points with a given color
      */
-    void (*draw_rectangle(const Simplegfx_canvas *canvas, int x1, int x2,
+    void (*draw_rectangle)(const Simplegfx_canvas *canvas, int x1, int x2,
                           int y1, int y2, unsigned char r, unsigned char g,
                           unsigned char b, unsigned char alpha);
 };
