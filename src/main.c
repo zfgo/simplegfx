@@ -10,6 +10,13 @@ int main(void) {
     }
     canvas->fill_canvas(canvas, 255, 0, 0, 125);
     canvas->assign_pixel(canvas, 1, 1, 0, 0, 0, 255);
+    for (int i = 0; i < 12; ++i) {
+        for (int j = 0; j < 12; ++j) {
+            if (i % 2 && !(j % 2))
+                canvas->draw_rectangle(canvas, (100 / 12) * i, (100 / 12) * i + 6, (100 / 12) * j, (100 / 12) * j + 6, 0, 255, 0, 255); 
+        }
+    }
+
     canvas->write(canvas, "./tests/test.ppm");
     canvas->destroy(canvas);
     printf("Done.\n");
